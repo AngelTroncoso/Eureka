@@ -1,0 +1,18 @@
+# EUREKA - Dependencias de la app Streamlit (Streamlit Community Cloud)
+# Instalacion local:  pip install -r requirements.txt
+
+# Interfaz
+streamlit==1.62.0
+pandas==3.0.5
+
+# Carga de variables de entorno (.env) - usado por src/agents/*.py
+python-dotenv==1.2.3
+
+# Trazabilidad LangSmith
+langsmith==0.11.1
+
+# Gemini: SDK nuevo (src/agents/marketing-prospeccion.py y demas agentes)
+google-genai==2.19.0
+
+# Gemini: SDK clasico (eureka_agent_bridge.py -> managed_deep_agent_direct.py)
+google-generativeai==0.8.6
