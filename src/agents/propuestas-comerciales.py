@@ -35,8 +35,10 @@ Trazabilidad LangSmith: raíz 'propuestas_comerciales' + spans
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -58,6 +60,17 @@ from google.genai import types   # noqa: E402
 MODELO = os.getenv("MARKETING_MODELO", "gemini-3.6-flash")
 RUTA_CATALOGO = RAIZ_PROYECTO / "config" / "catalogo-servicios.json"
 SCRIPT_E2E = RAIZ_PROYECTO / "scripts" / "e2e.js"
+
+# Motor de decisión decidirCEO en Python puro (fallback cuando Node.js o los
+# artefactos compilados dist/ + node_modules no están disponibles, p. ej. en
+# Streamlit Community Cloud).
+_spec_ceo = importlib.util.spec_from_file_location(
+    "ceo_python",
+    RAIZ_PROYECTO / "src" / "agents" / "ceo_python.py",
+)
+ceo_py = importlib.util.module_from_spec(_spec_ceo)
+sys.modules["ceo_python"] = ceo_py
+_spec_ceo.loader.exec_module(ceo_py)
 
 # Margen bruto por defecto atribuido a la propuesta interna cuando el
 # comercial no indica uno (por encima del objetivo 25% de company.ts).
@@ -228,15 +241,21 @@ def _construir_propuesta_interna(
     }
 
 
-@traceable(name="propuestas-comerciales.validacion_ceo", run_type="tool")
-def validar_con_decidir_ceo(
-    propuesta_interna: Dict[str, Any],
-) -> Dict[str, Any]:
+def _node_disponible() -> bool:
+    """True solo si Node.js y los artefactos compilados existen (entorno local)."""
+    if shutil.which("node") is None:
+        return False
+    return (
+        (RAIZ_PROYECTO / "dist" / "core" / "ceo.js").exists()
+        and (RAIZ_PROYECTO / "node_modules" / "dotenv").exists()
+    )
+
+
+def _validar_via_node(propuesta_interna: Dict[str, Any]) -> Dict[str, Any]:
     """
-    FASE DE VALIDACIÓN · Reutiliza el flujo existente scripts/e2e.js --json
-    (mismo patrón que app_streamlit.py): la propuesta interna viaja por la
-    variable de entorno EUREKA_PROPUESTA_JSON y decidirCEO() aplica sus
-    reglas reales (caja mínima, margen objetivo, veto cruzado de agentes).
+    Ejecuta el flujo original scripts/e2e.js --json: la propuesta interna viaja
+    por la variable de entorno EUREKA_PROPUESTA_JSON y decidirCEO() (TypeScript)
+    aplica sus reglas reales con trazabilidad LangSmith completa.
     """
     env = os.environ.copy()
     env["EUREKA_PROPUESTA_JSON"] = json.dumps(
@@ -268,9 +287,44 @@ def validar_con_decidir_ceo(
         raise RuntimeError(
             f"e2e.js terminó con código {proc.returncode} sin JSON.\n{detalle}"
         )
+    return payload
+
+
+@traceable(name="propuestas-comerciales.validacion_ceo", run_type="tool")
+def validar_con_decidir_ceo(
+    propuesta_interna: Dict[str, Any],
+) -> Dict[str, Any]:
+    """
+    FASE DE VALIDACIÓN · decideirCEO() con motor dual:
+
+      · 'node_ts'         → flujo original scripts/e2e.js --json (5 agentes TS,
+                            árbol de traza LangSmith). Solo en local con dist/.
+      · 'python_fallback' → réplica 1:1 de las mismas reglas en Python puro
+                            (src/agents/ceo_python.py), para entornos sin
+                            Node.js (Streamlit Community Cloud).
+
+    Se intenta Node primero; ante ausencia o fallo del subproceso se degrada
+    al fallback Python, así la validación NUNCA queda en 'error' por
+    infraestructura del entorno de despliegue.
+    """
+    payload: Optional[Dict[str, Any]] = None
+    motor = "python_fallback"
+    error_node: Optional[str] = None
+
+    if _node_disponible():
+        motor = "node_ts"
+        try:
+            payload = _validar_via_node(propuesta_interna)
+        except Exception as exc:  # noqa: BLE001 — node ausente/roto → fallback
+            error_node = str(exc)[:200]
+            payload = None
+
+    if payload is None:
+        motor = "python_fallback"
+        payload = ceo_py.tomar_decision_json(propuesta_interna)
 
     decision = str(payload.get("decision", "")).lower()
-    return {
+    resultado: Dict[str, Any] = {
         "decision": decision,
         "lista_para_enviar": decision == "aprobado",
         "detalle": str(payload.get("justificacion", ""))[:400],
@@ -278,7 +332,11 @@ def validar_con_decidir_ceo(
         "langsmith_url": payload.get("langsmith_url"),
         # Aportes individuales de los 5 agentes (para vistas tipo tarjetas):
         "aportes_agentes": payload.get("aportes_agentes") or {},
+        "motor_validacion": motor,
     }
+    if error_node:
+        resultado["error_node"] = error_node
+    return resultado
 
 
 SYSTEM_PROMPT = """Eres el redactor comercial de EUREKA, empresa que desarrolla \
