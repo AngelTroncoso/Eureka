@@ -1,0 +1,7 @@
+# Tema visual de la interfaz EUREKA (coherente con COLOR_SEVERIDAD / COLOR_DECISION)
+[theme]
+base = "light"
+primaryColor = "#3949ab"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f4f6fc"
+textColor = "#1c1c3a"

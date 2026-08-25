@@ -1,0 +1,26 @@
+[
+  {
+    "tier": 1,
+    "nombre": "Agente Simple",
+    "alcance": "Un agente conversacional o de automatización puntual (chatbot de atención, FAQ inteligente, asistente de contenido) integrado a un canal.",
+    "tiempo_semanas": [2, 4],
+    "precio_clp": [800000, 2000000],
+    "target": "pyme"
+  },
+  {
+    "tier": 2,
+    "nombre": "Multiagente a Medida",
+    "alcance": "Sistema multiagente coordinado (orquestador + agentes especializados) sobre los datos y procesos del cliente, con integraciones acotadas.",
+    "tiempo_semanas": [6, 10],
+    "precio_clp": [3000000, 8000000],
+    "target": "pyme_grande"
+  },
+  {
+    "tier": 3,
+    "nombre": "Integración Empresarial",
+    "alcance": "Plataforma de agentes integrada al stack empresarial (ERP/CRM/cloud/legado), con seguridad, gobernanza de datos y acompañamiento a escala.",
+    "tiempo_semanas": [12, 24],
+    "precio_clp_desde": 10000000,
+    "target": "empresa_grande"
+  }
+]

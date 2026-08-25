@@ -1,0 +1,27 @@
+{
+  "empresa": "Mercadona",
+  "rubro": "Retail / Distribución",
+  "tamano_estimado": "grande",
+  "presencia_digital": {
+    "sitio_web": "https://info.mercadona.es/es/inicio",
+    "linkedin": "https://es.linkedin.com/company/mercadona"
+  },
+  "senales_de_necesidad": [
+    "Ofertas de empleo en #MercadonaIT buscando perfiles en gestión del dato, desarrollo de software e infraestructura cloud [fuente: es.linkedin.com]",
+    "Prueba del formato 'Tienda 9' para buscar mayor eficiencia y adaptación en supermercados [fuente: linkedin.com]",
+    "Desarrollo de plataforma e-commerce con la unidad especializada Mercadona Tech [fuente: es.linkedin.com]"
+  ],
+  "fuentes": [
+    "https://es.linkedin.com/company/mercadona",
+    "https://www.linkedin.com/company/mercadona",
+    "https://www.linkedin.com/company/mercadona/jobs",
+    "https://www.linkedin.com/news/story/el-secreto-del-%C3%A9xito-de-lidl-y-mercadona-6991713",
+    "https://mercadona.avature.net/es_ES/Careers",
+    "https://info.mercadona.es/es/inicio",
+    "https://www.linkedin.com/posts/jordiromero_mercadona-online-con-juana-roig-la-startup-activity-7028426539390115840--Wlz",
+    "https://www.linkedin.com/news/story/mercadona-r%C3%A9cord-en-todo-7738225",
+    "https://www.linkedin.com/news/story/as%C3%AD-ser%C3%A1n-los-mercadona-del-futuro-8516514",
+    "https://es.linkedin.com/company/mercadonatech"
+  ],
+  "confianza": "alta"
+}

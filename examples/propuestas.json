@@ -1,0 +1,58 @@
+{
+  "propuestas": [
+    {
+      "agente": "ventas",
+      "tipo": "propuesta",
+      "resumen": "Promoción de verano con descuentos del 20%",
+      "datos_clave": {
+        "margen_bruto": 20,
+        "crecimiento_ventas": 25,
+        "ventas_actuales": 10000000,
+        "caja_proyectada": 60000000,
+        "caja_actual": 70000000
+      },
+      "riesgo": "medio",
+      "requiere_aprobacion_ceo": true
+    },
+    {
+      "agente": "finanzas",
+      "tipo": "alerta",
+      "resumen": "Alerta: Caja proyectada cerca del mínimo",
+      "datos_clave": {
+        "caja_proyectada": 45000000,
+        "caja_actual": 55000000,
+        "margen_bruto_requerido": 25
+      },
+      "riesgo": "alto",
+      "requiere_aprobacion_ceo": true
+    },
+    {
+      "agente": "compras",
+      "tipo": "propuesta",
+      "resumen": "Compra de servidores para expansión",
+      "datos_clave": {
+        "stock_solicitado": 500,
+        "capacidad_actual": 1000,
+        "capacidad_maxima": 1200,
+        "precio_compra": 15000000,
+        "precio_mercado": 18000000,
+        "calidad_proveedor": 4
+      },
+      "riesgo": "bajo",
+      "requiere_aprobacion_ceo": true
+    },
+    {
+      "agente": "logistica",
+      "tipo": "reporte",
+      "resumen": "Capacidad de almacenamiento al límite",
+      "datos_clave": {
+        "capacidad_actual": 1100,
+        "capacidad_maxima": 1200,
+        "plazo_entrega": 15,
+        "plazo_maximo": 30
+      },
+      "riesgo": "medio",
+      "requiere_aprobacion_ceo": false
+    }
+  ]
+}

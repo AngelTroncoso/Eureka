@@ -1,0 +1,33 @@
+{
+  "name": "eureka-agents",
+  "version": "1.0.0",
+  "description": "Sistema de agentes de EUREKA - Orquestador CEO",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "jest",
+    "dev": "ts-node src/index.ts"
+  },
+  "keywords": [
+    "CEO",
+    "agentes",
+    "orquestador",
+    "decisiones",
+    "EUREKA"
+  ],
+  "author": "EUREKA",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.12.7",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "langsmith": "^0.9.0"
+  }
+}
