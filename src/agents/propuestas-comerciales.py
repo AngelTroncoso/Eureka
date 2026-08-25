@@ -369,14 +369,14 @@ def _redactar_texto_gemini(cliente: genai.Client, prompt: str) -> str:
     respuesta = None
     for intento in range(3):
         try:
-            respuesta = cliente.models.generate_content(
+            chat = cliente.chats.create(
                 model=MODELO,
-                contents=prompt,
                 config=types.GenerateContentConfig(
                     system_instruction=SYSTEM_PROMPT,
                     temperature=0.4,
                 ),
             )
+            respuesta = chat.send_message(prompt)
             break
         except Exception as exc:  # noqa: BLE001
             ultimo_error = exc
